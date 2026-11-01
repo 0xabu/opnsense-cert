@@ -18,7 +18,7 @@ effect using solely the API.)
 This need not be (and ideally isn't) the root user. To create such an account and key:
  1. Navigate to *System: Access: Users* and click the plus.
  2. Give the new user a suitable name.
- 3. Select *Disabled* and *Scrambled Password*, so the user can't log in.
+ 3. Select *Scrambled Password*.
  4. Under *Privileges*, select *System: Trust: Authorities* and *System: Trust:
     Certificates*.
  5. Click *Save*.

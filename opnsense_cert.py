@@ -6,6 +6,7 @@ import pathlib
 import re
 import requests
 import subprocess
+import urllib3
 
 __version__ = "0.0.1"
 
@@ -105,7 +106,7 @@ def import_missing_cas(sess: requests.Session, api_url: str, ca_certs: list[str]
     response = sess.get(f"{api_url}/trust/ca/search")
     response.raise_for_status()
 
-    server_ca_crts: set[str] = {}
+    server_ca_crts: set[str] = set()
     for row in response.json()["rows"]:
         crt = row.get("crt_payload")
         if crt:
@@ -155,6 +156,7 @@ def main() -> None:
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format='%(message)s')
+    logging.captureWarnings(True)
 
     # the last cert in the bundle is (assumed to be) a self-signed root cert that we ignore
     certs = read_cert_bundle(args.cert)[:-1]
@@ -165,7 +167,12 @@ def main() -> None:
 
     sess = requests.Session()
     sess.auth = read_apikey(args.apikey)
+
+    # since we're installing a certificate, we can't reliably assume that the target will
+    # have a valid certificate to present us, so skip verification and silence the warnings
     sess.verify = False
+    urllib3.disable_warnings()
+
     key = open(args.key, 'r').read()
     update_cert_bundle(sess, api_url, cert_cn, certs, key)
 
