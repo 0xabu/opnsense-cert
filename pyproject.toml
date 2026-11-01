@@ -1,0 +1,23 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "opnsense-cert"
+dynamic = ["version"]
+requires-python = ">=3.11"
+dependencies = ["requests"]
+description = "Installs a certificate bundle to OPNsense using the HTTP API"
+readme = "README.md"
+authors = [
+    {name = "Andrew Baumann", email = "pypi.org@ab.id.au"},
+]
+
+[project.scripts]
+opnsense-cert = "opnsense-cert:main"
+
+[project.urls]
+Homepage = "https://github.com/0xabu/opnsense-cert"
+
+[tool.flit.module]
+name = "opnsense-cert"
