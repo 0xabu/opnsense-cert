@@ -14,10 +14,10 @@ authors = [
 ]
 
 [project.scripts]
-opnsense-cert = "opnsense-cert:main"
+opnsense-cert = "opnsense_cert:main"
 
 [project.urls]
 Homepage = "https://github.com/0xabu/opnsense-cert"
 
 [tool.flit.module]
-name = "opnsense-cert"
+name = "opnsense_cert"
