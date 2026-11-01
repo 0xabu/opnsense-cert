@@ -7,6 +7,8 @@ import re
 import requests
 import subprocess
 
+__version__ = "0.0.1"
+
 def read_apikey(path: pathlib.Path) -> tuple[str, str]:
     """
     Reads an OPNsense API key from the provided file path.
@@ -138,7 +140,7 @@ def update_cert_bundle(sess: requests.Session, api_url: str, cert_cn: str, certs
     """
     cert_uuid = search_one_cert(sess, api_url, cert_cn)
     if cert_uuid is None:
-        raise RuntimeError("Failed to find existing in-use cert for %s", cert_cn)
+        raise RuntimeError("Failed to find existing in-use cert for %s" % cert_cn)
     import_missing_cas(sess, api_url, certs[1:])
     logging.info("Updating cert for %s with UUID %s", cert_cn, cert_uuid)
     set_cert(sess, api_url, cert_uuid, cert_cn, certs[0], key_data)
