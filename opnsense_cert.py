@@ -150,13 +150,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(
                     description='Import a certificate bundle and private key to OPNsense')
     parser.add_argument('-u', dest='url', help='OPNsense URL, defaults to https://<CERT_COMMONNAME>')
-    parser.add_argument('apikey', type=pathlib.Path, help='Path to OPNsense API key')
-    parser.add_argument('cert', type=pathlib.Path, help='Path to certificate bundle')
-    parser.add_argument('key', type=pathlib.Path, help='Path to private key')
+    parser.add_argument('-k', '--insecure', dest='insecure', action='store_true',
+                        help="Skip certificate verification on API endpoints")
+    parser.add_argument('apikey', metavar='APIKEY', type=pathlib.Path, help='Path to OPNsense API key')
+    parser.add_argument('cert', metavar='CERT', type=pathlib.Path, help='Path to certificate bundle')
+    parser.add_argument('key', metavar='KEY', type=pathlib.Path, help='Path to private key')
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format='%(message)s')
-    logging.captureWarnings(True)
 
     # the last cert in the bundle is (assumed to be) a self-signed root cert that we ignore
     certs = read_cert_bundle(args.cert)[:-1]
@@ -168,10 +169,9 @@ def main() -> None:
     sess = requests.Session()
     sess.auth = read_apikey(args.apikey)
 
-    # since we're installing a certificate, we can't reliably assume that the target will
-    # have a valid certificate to present us, so skip verification and silence the warnings
-    sess.verify = False
-    urllib3.disable_warnings()
+    if args.insecure:
+        sess.verify = False
+        urllib3.disable_warnings()
 
     key = open(args.key, 'r').read()
     update_cert_bundle(sess, api_url, cert_cn, certs, key)

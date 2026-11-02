@@ -35,4 +35,8 @@ Invoke the script with a command such as:
 ```
 opnsense-cert myrouter_certadmin_apikey.txt myrouter.crt myrouter.key
 ```
-See `opnsense-cert --help` for details.
+See `opnsense-cert --help` for full details. If replacing an already-expired
+cert, or using the -u option to reach the server over an alternative name / IP
+address, you will likely need to pass `--insecure` to skip TLS certificate
+verification.
+
