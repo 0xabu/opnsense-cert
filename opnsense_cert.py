@@ -146,6 +146,14 @@ def update_cert_bundle(sess: requests.Session, api_url: str, cert_cn: str, certs
     logging.info("Updating cert for %s with UUID %s", cert_cn, cert_uuid)
     set_cert(sess, api_url, cert_uuid, cert_cn, certs[0], key_data)
 
+def restart_webgui(sess: requests.Session, api_url: str) -> None:
+    logging.info("Restarting webgui service")
+    try:
+        response = sess.post(f"{api_url}/core/service/restart/webgui", json={})
+    except requests.exceptions.ConnectionError:
+        return # this is expected when the server restarts
+    response.raise_for_status()
+
 def main() -> None:
     parser = argparse.ArgumentParser(
                     description='Import a certificate bundle and private key to OPNsense')
@@ -175,6 +183,7 @@ def main() -> None:
 
     key = open(args.key, 'r').read()
     update_cert_bundle(sess, api_url, cert_cn, certs, key)
+    restart_webgui(sess, api_url)
 
 if __name__ == "__main__":
     main()

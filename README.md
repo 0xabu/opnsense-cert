@@ -1,7 +1,8 @@
 ## opnsense-cert
 
 This script automates installation of a certificate (e.g., fetched from Let's
-Encrypt using an ACME client) to an OPNsense system using only its HTTP API.
+Encrypt using an ACME client) to an OPNsense system using only its [HTTP
+API](https://docs.opnsense.org/development/api.html).
 
 ### Setup / Requirements
 
@@ -19,8 +20,10 @@ This need not be (and ideally isn't) the root user. To create such an account an
  1. Navigate to *System: Access: Users* and click the plus.
  2. Give the new user a suitable name.
  3. Select *Scrambled Password*.
- 4. Under *Privileges*, select *System: Trust: Authorities* and *System: Trust:
-    Certificates*.
+ 4. Under *Privileges*, select the following:
+    * *System: Trust: Authorities* to allow installing any new CA certs in the bundle
+    * *System: Trust: Certificates* to allow updating the certificate
+    * *Status: Services* to allow restarting the webgui service
  5. Click *Save*.
  6. On the list of users, click the button to create and download API key for
     this user (just to the left of the user's edit button).
